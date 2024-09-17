@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pd_hours/utils/theme/app_colors.dart';
+import 'package:pd_hours/widgets/add_launch_modal.dart';
 
 import '../utils/app_images.dart';
 
@@ -8,6 +9,14 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(160.0);
+  void _showAddLaunchDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AddLaunchModal();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +76,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => _showAddLaunchDialog(context),
                       child: const Text(
                         "Lançar horas",
                         overflow: TextOverflow.ellipsis,
