@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pd_hours/providers/squad_provider.dart';
+import 'package:pd_hours/providers/squads_provider.dart';
 import 'package:pd_hours/utils/theme/app_colors.dart';
 import 'package:pd_hours/widgets/add_squad_modal.dart';
 import 'package:pd_hours/widgets/empty_card.dart';
@@ -28,7 +28,7 @@ class _SquadTabState extends State<SquadTab> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
-    return Consumer<SquadProvider>(
+    return Consumer<SquadsProvider>(
       builder: (context, squadProvider, _) {
         final squads = squadProvider.squads;
 

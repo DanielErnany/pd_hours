@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:pd_hours/models/squad.dart';
 
-class SquadProvider with ChangeNotifier {
+class SquadsProvider with ChangeNotifier {
   final List<Squad> _squads = [];
 
   List<Squad> get squads => [..._squads];
+
+  bool existSquadId(int id) {
+    return _squads.any((squad) => squad.id == id);
+  }
 
   void addSquad(Squad squad) {
     int maxId = _squads.isEmpty

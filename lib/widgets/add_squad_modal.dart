@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pd_hours/models/squad.dart';
-import 'package:pd_hours/providers/squad_provider.dart';
+import 'package:pd_hours/providers/squads_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddSquadModal extends StatefulWidget {
@@ -13,11 +13,11 @@ class AddSquadModal extends StatefulWidget {
 class _AddSquadModalState extends State<AddSquadModal> {
   final _nameKey = GlobalKey<FormFieldState<String>>();
 
-  void _addSquad() {
+  void _saveForm() {
     if (!_nameKey.currentState!.validate()) return;
 
     Squad squad = Squad(name: _nameKey.currentState!.value!);
-    final squadProvider = Provider.of<SquadProvider>(context, listen: false);
+    final squadProvider = Provider.of<SquadsProvider>(context, listen: false);
 
     squadProvider.addSquad(squad);
     Navigator.of(context).pop();
@@ -70,7 +70,7 @@ class _AddSquadModalState extends State<AddSquadModal> {
             ),
             ElevatedButton(
               onPressed: () {
-                _addSquad();
+                _saveForm();
               },
               child: const Text(
                 "Criar squad",
