@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const AddSquadModal();
+        return AddSquadModal();
       },
     );
   }
