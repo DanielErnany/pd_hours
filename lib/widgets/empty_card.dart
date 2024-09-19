@@ -5,12 +5,14 @@ import 'package:pd_hours/utils/app_images.dart';
 class EmptyCard extends StatelessWidget {
   String labelButton;
   String description;
+  double? elevation;
   void Function()? onPressed;
   EmptyCard({
     Key? key,
     required this.labelButton,
     required this.description,
     this.onPressed,
+    this.elevation,
   }) : super(key: key);
 
   @override
@@ -19,6 +21,7 @@ class EmptyCard extends StatelessWidget {
       width: 490,
       height: 410,
       child: Card(
+          elevation: elevation,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),

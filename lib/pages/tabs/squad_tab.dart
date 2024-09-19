@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:pd_hours/widgets/squads_custom_table.dart';
+import 'package:flutter/services.dart';
+import 'package:pd_hours/widgets/squad_card.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pd_hours/models/squad.dart';
 import 'package:pd_hours/providers/squads_provider.dart';
 import 'package:pd_hours/widgets/add_squad_modal.dart';
 import 'package:pd_hours/widgets/empty_card.dart';
+import 'package:pd_hours/widgets/squads_custom_table.dart';
 
 class SquadTab extends StatefulWidget {
   const SquadTab({super.key});
@@ -15,6 +17,23 @@ class SquadTab extends StatefulWidget {
 }
 
 class _SquadTabState extends State<SquadTab> {
+  bool _isSquadCard = false;
+  Squad? _selectedSquad;
+
+  void _showSquadCard(Squad squad) {
+    setState(() {
+      _isSquadCard = true;
+      _selectedSquad = squad;
+    });
+  }
+
+  void _backSquadCard() {
+    setState(() {
+      _isSquadCard = false;
+      _selectedSquad = null;
+    });
+  }
+
   void _showAddSquadDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -48,6 +67,13 @@ class _SquadTabState extends State<SquadTab> {
           );
         }
 
+        if (_isSquadCard) {
+          return SquadCard(
+            squad: _selectedSquad!,
+            backOnPressed: _backSquadCard,
+          );
+        }
+
         return Align(
           alignment: Alignment.topLeft,
           child: SingleChildScrollView(
@@ -75,6 +101,7 @@ class _SquadTabState extends State<SquadTab> {
                           SquadCustomTable(
                             width: screenSize.width * 0.4,
                             squads: squads,
+                            onSquadButtonPressed: _showSquadCard,
                           ),
                           const SizedBox(height: 16),
                           Center(

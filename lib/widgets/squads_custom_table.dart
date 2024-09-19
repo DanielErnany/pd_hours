@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+
 import 'package:pd_hours/models/squad.dart';
 import 'package:pd_hours/utils/theme/app_colors.dart';
 
 class SquadCustomTable extends StatelessWidget {
   double width;
   List<Squad> squads;
+
+  Function(Squad squad) onSquadButtonPressed;
+
   SquadCustomTable({
     Key? key,
     required this.width,
     required this.squads,
+    required this.onSquadButtonPressed,
   }) : super(key: key);
 
   @override
@@ -74,7 +79,10 @@ class SquadCustomTable extends StatelessWidget {
                 ),
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 10,
+                    ),
                     child: Text(
                       squad.id.toString(),
                       style: textTheme.bodyText1,
@@ -83,7 +91,10 @@ class SquadCustomTable extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 2,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -97,7 +108,7 @@ class SquadCustomTable extends StatelessWidget {
                         ),
                         Flexible(
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: (() => onSquadButtonPressed(squad)),
                             child: const Text(
                               "Visitar squad",
                               overflow: TextOverflow.ellipsis,
