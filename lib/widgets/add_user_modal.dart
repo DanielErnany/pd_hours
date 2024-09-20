@@ -102,9 +102,10 @@ class _AddUserModalState extends State<AddUserModal> {
                           SizedBox(
                             width: screenSize.width * 0.01,
                           ),
-                          const Text(
+                          Text(
                             "Não existe squad com este id",
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: theme.errorColor),
                           ),
                           SizedBox(
                             width: screenSize.width * 0.01,
@@ -164,10 +165,28 @@ class _AddUserModalState extends State<AddUserModal> {
                   controller: _squadController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
+                    suffixIcon: _showSquadIdError
+                        ? Icon(Icons.warning_amber, color: theme.errorColor)
+                        : null,
                     labelText: 'Squad',
                     hintText: "Digite o Id da squad",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color:
+                            _showSquadIdError ? theme.errorColor : Colors.grey,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: _showSquadIdError
+                            ? theme.errorColor
+                            : theme.primaryColor, // Cor da borda focada
+                      ),
                     ),
                   ),
                   keyboardType: TextInputType.number,
