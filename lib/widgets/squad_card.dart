@@ -178,20 +178,21 @@ class _SquadCardState extends State<SquadCard> {
                           ),
                         ),
                       ),
-                      if (employeesFromSquad.isEmpty)
-                        EmptyCard(
-                          labelButton: "Criar usuário",
-                          elevation: 0,
-                          description:
-                              "Nenhum usuário cadastrado nesta squad. Crie um usuário para começar.",
-                          onPressed: () => _showAddUserDialog(context),
-                        ),
-                      if (_isNotValidInterval)
-                        EmptyCard(
-                          elevation: 0,
-                          description:
-                              "Nenhum intervalo de data selecionado. Selecione um intervalo para começar.",
-                        ),
+                      (employeesFromSquad.isEmpty)
+                          ? EmptyCard(
+                              labelButton: "Criar usuário",
+                              elevation: 0,
+                              description:
+                                  "Nenhum usuário cadastrado nesta squad. Crie um usuário para começar.",
+                              onPressed: () => _showAddUserDialog(context),
+                            )
+                          : (_isNotValidInterval)
+                              ? EmptyCard(
+                                  elevation: 0,
+                                  description:
+                                      "Nenhum intervalo de data selecionado. Selecione um intervalo para começar.",
+                                )
+                              : const SizedBox()
                     ],
                   ),
                 ),

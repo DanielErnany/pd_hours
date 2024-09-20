@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pd_hours/pages/home_page.dart';
 import 'package:pd_hours/providers/employees_provider.dart';
+import 'package:pd_hours/providers/reports_provider.dart';
 import 'package:pd_hours/providers/squads_provider.dart';
 import 'package:pd_hours/utils/theme/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (ctx) => SquadsProvider()),
         ChangeNotifierProvider(create: (ctx) => EmployeesProvider()),
+        ChangeNotifierProvider(create: (ctx) => ReportsProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -16,6 +16,10 @@ class EmployeesProvider with ChangeNotifier {
     return employeesFromSquad;
   }
 
+  bool existEmployeeId(int id) {
+    return employees.any((squad) => squad.id == id);
+  }
+
   void addEmployee(Employee employee) {
     int maxId = _employees.isEmpty
         ? 0
