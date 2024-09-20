@@ -258,57 +258,62 @@ class _SquadCardState extends State<SquadCard> {
                                       "Nenhum intervalo de data selecionado. Selecione um intervalo para começar.",
                                 )
                               : const SizedBox(),
-                      if (reportsFromSquad.isNotEmpty)
-                        Column(
-                          children: [
-                            ReportsCustomTable(
-                              width: screenSize.width * 0.5,
-                              reports: reportsFromSquad
-                                  .map((report) => [
-                                        employeesFromSquad
-                                            .where((element) =>
-                                                element.id == report.employeeId)
-                                            .map((e) => e.name.toString())
-                                            .first,
-                                        report.description,
-                                        report.spentHours,
-                                        DateFormat('dd/MM/yyyy')
-                                            .format(report.createdAt)
-                                      ])
-                                  .toList(),
+                      (reportsFromSquad.isNotEmpty)
+                          ? Column(
+                              children: [
+                                ReportsCustomTable(
+                                  width: screenSize.width * 0.5,
+                                  reports: reportsFromSquad
+                                      .map((report) => [
+                                            employeesFromSquad
+                                                .where((element) =>
+                                                    element.id ==
+                                                    report.employeeId)
+                                                .map((e) => e.name.toString())
+                                                .first,
+                                            report.description,
+                                            report.spentHours,
+                                            DateFormat('dd/MM/yyyy')
+                                                .format(report.createdAt)
+                                          ])
+                                      .toList(),
+                                ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Text(
+                                  "Horas totais da squad",
+                                  style: textTheme.headline4
+                                      ?.copyWith(color: AppColors.black),
+                                ),
+                                Text(
+                                  "$totalHours Horas",
+                                  style: textTheme.headline3?.copyWith(
+                                    color: theme.primaryColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Text(
+                                  "Média de horas por dia",
+                                  style: textTheme.headline4
+                                      ?.copyWith(color: AppColors.black),
+                                ),
+                                Text(
+                                  "${calculateAverageHoursPerDay(totalHours, _initialDate!, _finalDate!)} Horas/Dia",
+                                  style: textTheme.headline3?.copyWith(
+                                    color: theme.primaryColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : EmptyCard(
+                              elevation: 0,
+                              description: "Nenhum lançamento cadastrado.",
                             ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Text(
-                              "Horas totais da squad",
-                              style: textTheme.headline4
-                                  ?.copyWith(color: AppColors.black),
-                            ),
-                            Text(
-                              "$totalHours Horas",
-                              style: textTheme.headline3?.copyWith(
-                                color: theme.primaryColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Text(
-                              "Média de horas por dia",
-                              style: textTheme.headline4
-                                  ?.copyWith(color: AppColors.black),
-                            ),
-                            Text(
-                              "${calculateAverageHoursPerDay(totalHours, _initialDate!, _finalDate!)} Horas/Dia",
-                              style: textTheme.headline3?.copyWith(
-                                color: theme.primaryColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
                     ],
                   ),
                 ),
