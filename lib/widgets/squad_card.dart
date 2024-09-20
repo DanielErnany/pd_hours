@@ -61,6 +61,19 @@ class _SquadCardState extends State<SquadCard> {
     );
   }
 
+  double calculateAverageHoursPerDay(
+      int totalHours, DateTime initialDate, DateTime finalDate) {
+    int totalDays = finalDate.difference(initialDate).inDays;
+
+    if (totalDays == 0) {
+      return totalHours.toDouble();
+    }
+
+    double averageHoursPerDay = totalHours / totalDays;
+
+    return averageHoursPerDay;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -74,6 +87,7 @@ class _SquadCardState extends State<SquadCard> {
         .employeesFromSquad(widget.squad.id!);
 
     List<Report> reportsFromSquad = [];
+    int totalHours = 0;
 
     if (employeesFromSquad.isNotEmpty) {
       ReportsProvider reportsProvider = Provider.of<ReportsProvider>(context);
@@ -86,6 +100,10 @@ class _SquadCardState extends State<SquadCard> {
           initialDate: _initialDate!,
           finalDate: _finalDate!,
         );
+
+        for (var element in reportsFromSquad) {
+          totalHours += element.spentHours;
+        }
       }
     }
     return Align(
@@ -209,7 +227,14 @@ class _SquadCardState extends State<SquadCard> {
                                 width: widthFields,
                                 height: 50,
                                 child: ElevatedButton(
-                                  onPressed: _filterReports,
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: employeesFromSquad
+                                              .isEmpty
+                                          ? theme.primaryColor.withOpacity(0.5)
+                                          : theme.primaryColor),
+                                  onPressed: employeesFromSquad.isEmpty
+                                      ? () {}
+                                      : _filterReports,
                                   child: const Text("Filtrar por data"),
                                 ),
                               ),
@@ -234,21 +259,55 @@ class _SquadCardState extends State<SquadCard> {
                                 )
                               : const SizedBox(),
                       if (reportsFromSquad.isNotEmpty)
-                        ReportsCustomTable(
-                          width: screenSize.width * 0.5,
-                          reports: reportsFromSquad
-                              .map((report) => [
-                                    employeesFromSquad
-                                        .where((element) =>
-                                            element.id == report.employeeId)
-                                        .map((e) => e.name.toString())
-                                        .first,
-                                    report.description,
-                                    report.spentHours,
-                                    DateFormat('dd/MM/yyyy')
-                                        .format(report.createdAt)
-                                  ])
-                              .toList(),
+                        Column(
+                          children: [
+                            ReportsCustomTable(
+                              width: screenSize.width * 0.5,
+                              reports: reportsFromSquad
+                                  .map((report) => [
+                                        employeesFromSquad
+                                            .where((element) =>
+                                                element.id == report.employeeId)
+                                            .map((e) => e.name.toString())
+                                            .first,
+                                        report.description,
+                                        report.spentHours,
+                                        DateFormat('dd/MM/yyyy')
+                                            .format(report.createdAt)
+                                      ])
+                                  .toList(),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Text(
+                              "Horas totais da squad",
+                              style: textTheme.headline4
+                                  ?.copyWith(color: AppColors.black),
+                            ),
+                            Text(
+                              "$totalHours Horas",
+                              style: textTheme.headline3?.copyWith(
+                                color: theme.primaryColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Text(
+                              "Média de horas por dia",
+                              style: textTheme.headline4
+                                  ?.copyWith(color: AppColors.black),
+                            ),
+                            Text(
+                              "${calculateAverageHoursPerDay(totalHours, _initialDate!, _finalDate!)} Horas/Dia",
+                              style: textTheme.headline3?.copyWith(
+                                color: theme.primaryColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                     ],
                   ),
