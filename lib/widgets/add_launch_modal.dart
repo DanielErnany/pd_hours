@@ -94,9 +94,10 @@ class _AddLaunchModalState extends State<AddLaunchModal> {
                           SizedBox(
                             width: screenSize.width * 0.01,
                           ),
-                          const Text(
+                          Text(
                             "Não existe usuário com este id",
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: theme.errorColor),
                           ),
                           SizedBox(
                             width: screenSize.width * 0.01,
@@ -117,8 +118,27 @@ class _AddLaunchModalState extends State<AddLaunchModal> {
                   decoration: InputDecoration(
                     labelText: 'ID do usuário',
                     hintText: "Digite o ID do usuário",
+                    suffixIcon: _showEmployeeIdError
+                        ? Icon(Icons.warning_amber, color: theme.errorColor)
+                        : null,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: _showEmployeeIdError
+                            ? theme.errorColor
+                            : Colors.grey,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: _showEmployeeIdError
+                            ? theme.errorColor
+                            : theme.primaryColor, // Cor da borda focada
+                      ),
                     ),
                   ),
                   validator: (value) {
