@@ -1,13 +1,16 @@
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pd_hours/models/employee.dart';
 
 import 'package:pd_hours/models/squad.dart';
+import 'package:pd_hours/providers/employees_provider.dart';
 import 'package:pd_hours/utils/theme/app_colors.dart';
 import 'package:pd_hours/widgets/add_user_modal.dart';
 import 'package:pd_hours/widgets/empty_card.dart';
+import 'package:provider/provider.dart';
 
-class SquadCard extends StatelessWidget {
+class SquadCard extends StatefulWidget {
   Squad squad;
 
   Function() backOnPressed;
@@ -17,6 +20,15 @@ class SquadCard extends StatelessWidget {
     required this.squad,
     required this.backOnPressed,
   }) : super(key: key);
+
+  @override
+  State<SquadCard> createState() => _SquadCardState();
+}
+
+class _SquadCardState extends State<SquadCard> {
+  final _formKey = GlobalKey<FormState>();
+
+  final bool _isNotValidInterval = true;
 
   void _showAddUserDialog(BuildContext context) {
     showDialog(
@@ -34,6 +46,10 @@ class SquadCard extends StatelessWidget {
     final textTheme = theme.textTheme;
     double widthFields =
         screenSize.width * 0.2 < 200 ? screenSize.width * 0.2 : 200;
+
+    List<Employee> employeesFromSquad = Provider.of<EmployeesProvider>(context)
+        .employeesFromSquad(widget.squad.id!);
+
     return Align(
       alignment: Alignment.topLeft,
       child: SingleChildScrollView(
@@ -42,7 +58,7 @@ class SquadCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              squad.name,
+              widget.squad.name,
               style: textTheme.headline1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -62,7 +78,7 @@ class SquadCard extends StatelessWidget {
                       Align(
                         alignment: Alignment.topLeft,
                         child: IconButton(
-                          onPressed: backOnPressed,
+                          onPressed: widget.backOnPressed,
                           icon: const Icon(
                             Icons.arrow_back_ios_new,
                             color: AppColors.black,
@@ -76,95 +92,106 @@ class SquadCard extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 30, bottom: 20),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Spacer(),
-                            SizedBox(
-                              width: widthFields,
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value == null ||
-                                      value.isEmpty ||
-                                      value.trim().isEmpty) {
-                                    return 'Por favor, insira a data de inicio';
-                                  }
-                                  return null;
-                                },
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  DataInputFormatter(),
-                                ],
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  labelText: 'Inicio',
-                                  hintText: "16/09/2024",
-                                  prefixIcon: const Icon(Icons.calendar_today),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                        child: Form(
+                          key: _formKey,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Spacer(),
+                              SizedBox(
+                                width: widthFields,
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        value.trim().isEmpty) {
+                                      return 'Por favor, insira a data de inicio';
+                                    }
+                                    return null;
+                                  },
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    DataInputFormatter(),
+                                  ],
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    labelText: 'Inicio',
+                                    hintText: "16/09/2024",
+                                    prefixIcon:
+                                        const Icon(Icons.calendar_today),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              width: screenSize.width * 0.05 < 10
-                                  ? screenSize.width * 0.05
-                                  : 10,
-                            ),
-                            SizedBox(
-                              width: widthFields,
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value == null ||
-                                      value.isEmpty ||
-                                      value.trim().isEmpty) {
-                                    return 'Por favor, insira a data de fim';
-                                  }
-                                  return null;
-                                },
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  DataInputFormatter(),
-                                ],
-                                decoration: InputDecoration(
-                                  labelText: 'Fim',
-                                  hintText: "20/09/2024",
-                                  prefixIcon:
-                                      const Icon(Icons.calendar_today), //
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                              SizedBox(
+                                width: screenSize.width * 0.05 < 10
+                                    ? screenSize.width * 0.05
+                                    : 10,
+                              ),
+                              SizedBox(
+                                width: widthFields,
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        value.trim().isEmpty) {
+                                      return 'Por favor, insira a data de fim';
+                                    }
+                                    return null;
+                                  },
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    DataInputFormatter(),
+                                  ],
+                                  decoration: InputDecoration(
+                                    labelText: 'Fim',
+                                    hintText: "20/09/2024",
+                                    prefixIcon:
+                                        const Icon(Icons.calendar_today), //
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              width: screenSize.width * 0.05 < 10
-                                  ? screenSize.width * 0.05
-                                  : 10,
-                            ),
-                            SizedBox(
-                              width: widthFields,
-                              height: 50,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: const Text("Filtrar por data"),
+                              SizedBox(
+                                width: screenSize.width * 0.05 < 10
+                                    ? screenSize.width * 0.05
+                                    : 10,
                               ),
-                            ),
-                            const Spacer(),
-                          ],
+                              SizedBox(
+                                width: widthFields,
+                                height: 50,
+                                child: ElevatedButton(
+                                  onPressed: () {},
+                                  child: const Text("Filtrar por data"),
+                                ),
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
                         ),
                       ),
-                      EmptyCard(
-                        labelButton: "Criar usuário",
-                        elevation: 0,
-                        description:
-                            "Nenhum usuário cadastrado nesta squad. Crie um usuário para começar.",
-                        onPressed: () => _showAddUserDialog(context),
-                      ),
+                      if (employeesFromSquad.isEmpty)
+                        EmptyCard(
+                          labelButton: "Criar usuário",
+                          elevation: 0,
+                          description:
+                              "Nenhum usuário cadastrado nesta squad. Crie um usuário para começar.",
+                          onPressed: () => _showAddUserDialog(context),
+                        ),
+                      if (_isNotValidInterval)
+                        EmptyCard(
+                          elevation: 0,
+                          description:
+                              "Nenhum intervalo de data selecionado. Selecione um intervalo para começar.",
+                        ),
                     ],
                   ),
                 ),

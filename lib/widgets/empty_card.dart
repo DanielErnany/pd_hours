@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:pd_hours/utils/app_images.dart';
 
 class EmptyCard extends StatelessWidget {
-  String labelButton;
+  String? labelButton;
   String description;
   double? elevation;
   void Function()? onPressed;
   EmptyCard({
     Key? key,
-    required this.labelButton,
+    this.labelButton,
     required this.description,
     this.onPressed,
     this.elevation,
@@ -34,10 +34,11 @@ class EmptyCard extends StatelessWidget {
               Text(
                 description,
               ),
-              ElevatedButton(
-                onPressed: onPressed,
-                child: Text(labelButton),
-              )
+              if (labelButton != null)
+                ElevatedButton(
+                  onPressed: onPressed,
+                  child: Text(labelButton!),
+                )
             ],
           )),
     );

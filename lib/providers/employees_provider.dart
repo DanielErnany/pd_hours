@@ -6,6 +6,16 @@ class EmployeesProvider with ChangeNotifier {
 
   List<Employee> get employees => [..._employees];
 
+  List<Employee> employeesFromSquad(int squadId) {
+    List<Employee> employeesFromSquad = _employees
+        .where(
+          (element) => element.squadId == squadId,
+        )
+        .toList();
+
+    return employeesFromSquad;
+  }
+
   void addEmployee(Employee employee) {
     int maxId = _employees.isEmpty
         ? 0
