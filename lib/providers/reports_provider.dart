@@ -6,6 +6,20 @@ class ReportsProvider with ChangeNotifier {
 
   List<Report> get reports => [..._reports];
 
+  List<Report> reportsFromEmployees({
+    required List<int> employeesIds,
+    required DateTime initialDate,
+    required DateTime finalDate,
+  }) {
+    List<Report> reportsFromEmployees = _reports.where((report) {
+      return employeesIds.contains(report.employeeId) &&
+          report.createdAt.isAfter(initialDate) &&
+          report.createdAt.isBefore(finalDate);
+    }).toList();
+
+    return reportsFromEmployees;
+  }
+
   void addReport(Report report) {
     int maxId = _reports.isEmpty
         ? 0

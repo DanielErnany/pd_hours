@@ -2,13 +2,18 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pd_hours/models/employee.dart';
+import 'package:pd_hours/models/report.dart';
 
 import 'package:pd_hours/models/squad.dart';
 import 'package:pd_hours/providers/employees_provider.dart';
+import 'package:pd_hours/providers/reports_provider.dart';
 import 'package:pd_hours/utils/theme/app_colors.dart';
 import 'package:pd_hours/widgets/add_user_modal.dart';
 import 'package:pd_hours/widgets/empty_card.dart';
+import 'package:pd_hours/widgets/reports_custom_table.dart';
 import 'package:provider/provider.dart';
+
+import 'package:intl/intl.dart';
 
 class SquadCard extends StatefulWidget {
   Squad squad;
@@ -28,7 +33,24 @@ class SquadCard extends StatefulWidget {
 class _SquadCardState extends State<SquadCard> {
   final _formKey = GlobalKey<FormState>();
 
-  final bool _isNotValidInterval = true;
+  final TextEditingController _initialDateController = TextEditingController();
+  final TextEditingController _finalDateController = TextEditingController();
+
+  bool _isNotValidInterval = true;
+
+  DateTime? _initialDate;
+  DateTime? _finalDate;
+
+  void _filterReports() {
+    setState(() {
+      _isNotValidInterval = !_formKey.currentState!.validate();
+    });
+    if (!_isNotValidInterval) {
+      _initialDate =
+          DateFormat("dd/MM/yyyy").parse(_initialDateController.text);
+      _finalDate = DateFormat("dd/MM/yyyy").parse(_finalDateController.text);
+    }
+  }
 
   void _showAddUserDialog(BuildContext context) {
     showDialog(
@@ -44,12 +66,28 @@ class _SquadCardState extends State<SquadCard> {
     final screenSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+
     double widthFields =
         screenSize.width * 0.2 < 200 ? screenSize.width * 0.2 : 200;
 
     List<Employee> employeesFromSquad = Provider.of<EmployeesProvider>(context)
         .employeesFromSquad(widget.squad.id!);
 
+    List<Report> reportsFromSquad = [];
+
+    if (employeesFromSquad.isNotEmpty) {
+      ReportsProvider reportsProvider = Provider.of<ReportsProvider>(context);
+
+      List<int> employeesIds = employeesFromSquad.map((e) => e.id!).toList();
+
+      if (!_isNotValidInterval) {
+        reportsFromSquad = reportsProvider.reportsFromEmployees(
+          employeesIds: employeesIds,
+          initialDate: _initialDate!,
+          finalDate: _finalDate!,
+        );
+      }
+    }
     return Align(
       alignment: Alignment.topLeft,
       child: SingleChildScrollView(
@@ -101,6 +139,7 @@ class _SquadCardState extends State<SquadCard> {
                               SizedBox(
                                 width: widthFields,
                                 child: TextFormField(
+                                  controller: _initialDateController,
                                   validator: (value) {
                                     if (value == null ||
                                         value.isEmpty ||
@@ -135,6 +174,7 @@ class _SquadCardState extends State<SquadCard> {
                               SizedBox(
                                 width: widthFields,
                                 child: TextFormField(
+                                  controller: _finalDateController,
                                   validator: (value) {
                                     if (value == null ||
                                         value.isEmpty ||
@@ -169,7 +209,7 @@ class _SquadCardState extends State<SquadCard> {
                                 width: widthFields,
                                 height: 50,
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: _filterReports,
                                   child: const Text("Filtrar por data"),
                                 ),
                               ),
@@ -192,7 +232,24 @@ class _SquadCardState extends State<SquadCard> {
                                   description:
                                       "Nenhum intervalo de data selecionado. Selecione um intervalo para começar.",
                                 )
-                              : const SizedBox()
+                              : const SizedBox(),
+                      if (reportsFromSquad.isNotEmpty)
+                        ReportsCustomTable(
+                          width: screenSize.width * 0.5,
+                          reports: reportsFromSquad
+                              .map((report) => [
+                                    employeesFromSquad
+                                        .where((element) =>
+                                            element.id == report.employeeId)
+                                        .map((e) => e.name.toString())
+                                        .first,
+                                    report.description,
+                                    report.spentHours,
+                                    DateFormat('dd/MM/yyyy')
+                                        .format(report.createdAt)
+                                  ])
+                              .toList(),
+                        ),
                     ],
                   ),
                 ),
